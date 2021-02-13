@@ -17,7 +17,7 @@ class map {
 
     // color, true = red, false = black
     struct Node{
-        Node(keyType const& key, dataType const& data, Node *parentPtr){
+        Node(keyType key, dataType data, Node *parentPtr){
             right = nullptr; 
             left = nullptr; 
             this->parentPtr = parentPtr; 
@@ -33,7 +33,7 @@ class map {
 
     Node *root; 
 
-    void insert(keyType const& key, dataType const& data, Node *node){
+    void insert(keyType key, dataType data, Node *node){
         if(key <= node->Data.first){
             if(node -> left != nullptr){
                 insert(key, data, node->left);
@@ -130,7 +130,7 @@ class map {
         return recursiveSearch(index, root) != nullptr;
     }
 
-    void insert(keyType const& key, dataType const& data){
+    void insert(keyType key, dataType data){
         if(root != nullptr){
             insert(key, data, root);
         } else {
