@@ -1,10 +1,7 @@
 #include <iostream>
 #include "map.h"
-#include <random>
-#include <ctime>
 int main(){
-    srand(time(0));
-    class map<int,char*> map;
+    class map<int,std::string> map;
     map.insert(13, "a1");
     map.insert(8, "a2");
     map.insert(17, "a3");
@@ -17,8 +14,10 @@ int main(){
     map.insert(6, "a10");
     map.print();
     std::cout << map[22] << std::endl;
-    class map<int,char*> map1 = map;
+    class map<int,std::string> map1 = map;
     map.clear();
     std::cout << map1.isEmpety() << " " << map.isEmpety()<< "\n";
+    map1.insert(14,"a11");
+    map1.print();
     return 0; 
 }
