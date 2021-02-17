@@ -421,11 +421,11 @@ public:
             }
             tempBlack = Black;
             Hight++;
-            if (minHight == 0 || Hight > Black)
+            if (minHight == 0 || minHight > Hight)
             {
                 minHight = Hight;
             }
-            if (maxHight == 0 || Hight < Black)
+            if (maxHight == 0 || maxHight < Hight)
             {
                 maxHight = Hight;
             }
@@ -434,7 +434,7 @@ public:
             Путь от корня до самого дальнего листа не более чем в два раза 
             длиннее, чем путь от корня до ближайшего листа Красно-черного дерева
         */
-        if ((double)minHight / (double)maxHight > 2.0)
+        if ((double)maxHight / (double)minHight > 2.0)
         {
             std::cout << "Error\n";
             return 1;
