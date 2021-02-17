@@ -1,7 +1,17 @@
 #include <iostream>
 #include "map.h"
+#include <ctime>
 int main(){
+    srand(time(NULL));
     class map<int,std::string> map;
+    for(int j = 0; j < 50; j++){
+        for(int i = 0; i < 10000; i++){
+            map.insert(rand()%1000, "a1");
+            
+        }
+        map.test();
+        map.clear();
+    }
     map.insert(13, "a1");
     map.insert(8, "a2");
     map.insert(17, "a3");

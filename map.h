@@ -1,5 +1,10 @@
 #include <iostream>
 #include <iomanip>
+#include <vector>
+
+#define red true
+#define black false
+
 template <typename dataType>
 class Comparator
 {
@@ -30,7 +35,7 @@ private:
             left = nullptr;
             this->parent = parent;
             Data = std::make_pair(key, data);
-            color = true;
+            color = red;
         }
         Node *right;
         Node *left;
@@ -41,69 +46,94 @@ private:
 
     Node *root;
 
+    Node *getGrandParent(Node *node)
+    {
+        if ((node != nullptr) and (node->parent != nullptr))
+            return node->parent->parent;
+        return nullptr;
+    }
+
+    Node *getUncle(Node *node)
+    {
+        Node *grandParent = getGrandParent(node);
+
+        if (grandParent == nullptr)
+            return nullptr;
+        if (node->parent == grandParent->left)
+            return grandParent->right;
+        if (node->parent == grandParent->right)
+            return grandParent->left;
+    }
+
+    void swapColor(Node *nodeA, Node *nodeB)
+    {
+        bool tempColor = nodeA->color;
+        nodeA->color = nodeB->color;
+        nodeB->color = tempColor;
+    }
+
     void insertFix(Node *node)
     {
-        Node *temp;
-        if (root == node)
+
+        Node *parentNode = nullptr;
+        Node *grandParentNode = nullptr;
+        while ((node != root) and (node->color != black) and (node->parent->color == red))
         {
-            node->color = false;
-            return;
-        }
-        while (node->parent != nullptr && node->parent->color)
-        {
-            Node *temp1 = node->parent->parent;
-            if (temp1->left == node->parent)
+
+            parentNode = node->parent;
+            grandParentNode = getGrandParent(node);
+            if (parentNode == grandParentNode->left)
             {
-                if (temp1->right != nullptr)
+
+                Node *uncleNode = grandParentNode->right;
+                if (uncleNode != nullptr and uncleNode->color == red)
                 {
-                    temp = temp1->right;
-                    if (temp->color)
-                    {
-                        node->parent->color = false;
-                        temp->color = false;
-                        temp1->color = true;
-                        node = temp1;
-                    }
+                    grandParentNode->color = red;
+                    parentNode->color = black;
+                    uncleNode->color = black;
+                    node = grandParentNode;
                 }
+
                 else
                 {
-                    if (node->parent->right == node)
+                    if (node == parentNode->right)
                     {
-                        node = node->parent;
-                        rotateLeft(node);
+                        rotateLeft(parentNode);
+
+                        node = parentNode;
+                        parentNode = node->parent;
                     }
-                    node->parent->color = false;
-                    temp1->color = true;
-                    rotateRight(temp1);
+                    rotateRight(grandParentNode);
+                    swapColor(parentNode, grandParentNode);
+                    node = parentNode;
                 }
             }
+
             else
             {
-                if (temp1->left != NULL)
+                Node *uncleNode = grandParentNode->left;
+                if ((uncleNode != nullptr) && (uncleNode->color == red))
                 {
-                    temp = temp1->left;
-                    if (temp->color)
-                    {
-                        node->parent->color = false;
-                        temp->color = false;
-                        temp1->color = true;
-                        node = temp1;
-                    }
+                    grandParentNode->color = red;
+                    parentNode->color = black;
+                    uncleNode->color = black;
+                    node = grandParentNode;
                 }
                 else
                 {
-                    if (node->parent->left == node)
+                    if (node == parentNode->left)
                     {
-                        node = node->parent;
-                        rotateRight(node);
+                        rotateRight(parentNode);
+                        node = parentNode;
+                        parentNode = node->parent;
                     }
-                    node->parent->color = false;
-                    temp1->color = true;
-                    rotateLeft(temp1);
+                    rotateLeft(grandParentNode);
+                    swapColor(parentNode, grandParentNode);
+                    node = parentNode;
                 }
             }
-            root->color = false;
         }
+        root->color = black;
     }
 
     void insert(keyType key, dataType data, Node *node)
@@ -188,50 +218,52 @@ private:
 
     void rotateLeft(Node *node)
     {
-        Node *select = node->right;
-        select->parent = node->parent;
-        if (node->parent != nullptr)
+        Node *pivot = node->right;
+        node->right = pivot->left;
+        if (pivot->left != nullptr)
         {
-            if (node->parent->left == node)
-            {
-                node->parent->left = select;
-            }
-            else
-            {
-                node->parent->right = select;
-            }
+            pivot->left->parent = node;
         }
-        node->right = select->left;
-        if (select->left != nullptr)
+        pivot->parent = node->parent;
+        if (node->parent == nullptr)
         {
-            select->left->parent = node;
+            this->root = pivot;
         }
-        node->parent = select;
-        select->left = node;
+        else if (node == node->parent->left)
+        {
+            node->parent->left = pivot;
+        }
+        else
+        {
+            node->parent->right = pivot;
+        }
+        pivot->left = node;
+        node->parent = pivot;
     }
 
     void rotateRight(Node *node)
     {
-        Node *select = node->left;
-        select->parent = node->parent;
-        if (node->parent != nullptr)
+        Node *pivot = node->left;
+        node->left = pivot->right;
+        if (pivot->right != nullptr)
         {
-            if (node->parent->left == node)
-            {
-                node->parent->left = select;
-            }
-            else
-            {
-                node->parent->right = select;
-            }
+            pivot->right->parent = node;
         }
-        node->left = select->right;
-        if (select->right != nullptr)
+        pivot->parent = node->parent;
+        if (node->parent == nullptr)
         {
-            select->right->parent = node;
+            this->root = pivot;
         }
-        node->parent = select;
-        select->right = node;
+        else if (node == node->parent->right)
+        {
+            node->parent->right = pivot;
+        }
+        else
+        {
+            node->parent->left = pivot;
+        }
+        pivot->right = node;
+        node->parent = pivot;
     }
 
     void postorder(Node *p, int indent = 0)
@@ -256,6 +288,35 @@ private:
                 postorder(p->left, indent + 4);
             }
         }
+    }
+
+    //test
+    std::vector<Node *> searchSheets(Node *node, std::vector<Node *> sheets)
+    {
+        if (node != nullptr && node->left == nullptr and node->right == nullptr)
+        {
+            sheets.push_back(node);
+        }
+        /*
+            Если узел красный, то оба его дочерних элемента черные. Красно-черное дерево
+        */
+        if (node != nullptr && node->color == red)
+        {
+            if (node->left != nullptr && node->left->color != black)
+            {
+                std::cout << "Red node found in red\n";
+            }
+            if (node->right != nullptr && node->right->color != black)
+            {
+                std::cout << "Red node found in red\n";
+            }
+        }
+        if (node != nullptr)
+        {
+            sheets = searchSheets(node->left, sheets);
+            sheets = searchSheets(node->right, sheets);
+        }
+        return sheets;
     }
 
 public:
@@ -307,12 +368,14 @@ public:
 
     dataType &operator[](keyType const &index)
     {
-        if(recursiveSearch(index, root) != nullptr){
+        if (recursiveSearch(index, root) != nullptr)
+        {
             return recursiveSearch(index, root)->Data.second;
-        } else {
+        }
+        else
+        {
             throw std::runtime_error("Error: No node with such a key was found\n");
         }
-        
     };
 
     bool search(keyType const &index)
@@ -329,8 +392,63 @@ public:
         else
         {
             root = new Node(key, data, nullptr);
-            root->color = false;
+            root->color = black;
         }
+    }
+
+    int test()
+    {
+        std::vector<Node *> sheets;
+        sheets = searchSheets(root, sheets);
+        unsigned long Black = 0;
+        unsigned long tempBlack = 0;
+        unsigned long minHight = 0;
+        unsigned long maxHight = 0;
+        for (auto i : sheets)
+        {
+            Black = 0;
+            unsigned long Hight = 0;
+            Node *temp = i;
+            while (i->parent != nullptr)
+            {
+                if (i->color == black)
+                {
+                    Black++;
+                }
+                Hight++;
+                i = i->parent;
+            }
+            /*
+                Черная высота из красно-черного дерева этого число черных узлов в любом пути от корня до листьев,
+                причем эта высота является постоянной для Красно-черного дерева
+           */
+            if (Black != tempBlack && tempBlack != 0)
+            {
+                std::cout << "Black = " << Black << " tempBlack = " << tempBlack << "\n";
+                return 1;
+            }
+            tempBlack = Black;
+            Hight++;
+            if (minHight == 0 || minHight > Black)
+            {
+                minHight = Hight;
+            }
+            if (maxHight == 0 || maxHight < Black)
+            {
+                maxHight = Hight;
+            }
+        }
+        /*
+            Путь от корня до самого дальнего листа не более чем в два раза 
+            длиннее, чем путь от корня до ближайшего листа Красно-черного дерева
+        */
+        if ((double)minHight / (double)maxHight > 2.0)
+        {
+            std::cout << "Error\n";
+            return 1;
+        }
+        std::cout << "All test Done\n";
+        return 0;
     }
 
     void print()
