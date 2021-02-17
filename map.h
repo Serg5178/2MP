@@ -400,14 +400,14 @@ public:
         for (auto i : sheets)
         {
             Black = 0;
-            unsigned long Hight = 0;
+            unsigned long Path = 0;
             while (i->parent != nullptr)
             {
                 if (i->color == black)
                 {
                     Black++;
                 }
-                Hight++;
+                Path++;
                 i = i->parent;
             }
             /*
@@ -420,14 +420,14 @@ public:
                 return 1;
             }
             tempBlack = Black;
-            Hight++;
-            if (minPath == 0 || minPath > Hight)
+            Path++;
+            if (minPath == 0 || minPath > Path)
             {
-                minPath = Hight;
+                minPath = Path;
             }
-            if (maxPath == 0 || maxPath < Hight)
+            if (maxPath == 0 || maxPath < Path)
             {
-                maxPath = Hight;
+                maxPath = Path;
             }
         }
         /*
