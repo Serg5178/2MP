@@ -395,8 +395,8 @@ public:
         sheets = searchSheets(root, sheets);
         unsigned long Black = 0;
         unsigned long tempBlack = 0;
-        unsigned long minHight = 0;
-        unsigned long maxHight = 0;
+        unsigned long minPath = 0;
+        unsigned long maxPath = 0;
         for (auto i : sheets)
         {
             Black = 0;
@@ -421,20 +421,20 @@ public:
             }
             tempBlack = Black;
             Hight++;
-            if (minHight == 0 || minHight > Hight)
+            if (minPath == 0 || minPath > Hight)
             {
-                minHight = Hight;
+                minPath = Hight;
             }
-            if (maxHight == 0 || maxHight < Hight)
+            if (maxPath == 0 || maxPath < Hight)
             {
-                maxHight = Hight;
+                maxPath = Hight;
             }
         }
         /*
             Путь от корня до самого дальнего листа не более чем в два раза 
             длиннее, чем путь от корня до ближайшего листа Красно-черного дерева
         */
-        if ((double)maxHight / (double)minHight > 2.0)
+        if ((double)maxPath / (double)minPath > 2.0)
         {
             std::cout << "Error\n";
             return 1;
