@@ -401,7 +401,6 @@ public:
         {
             Black = 0;
             unsigned long Hight = 0;
-            Node *temp = i;
             while (i->parent != nullptr)
             {
                 if (i->color == black)
@@ -422,11 +421,11 @@ public:
             }
             tempBlack = Black;
             Hight++;
-            if (minHight == 0 || minHight > Black)
+            if (minHight == 0 || Hight > Black)
             {
                 minHight = Hight;
             }
-            if (maxHight == 0 || maxHight < Black)
+            if (maxHight == 0 || Hight < Black)
             {
                 maxHight = Hight;
             }
