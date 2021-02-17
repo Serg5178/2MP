@@ -11,14 +11,7 @@ class Comparator
 public:
     bool operator()(dataType object1, dataType object2)
     {
-        if (object1 < object2)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return object1 < object2;
     }
 };
 
@@ -374,7 +367,7 @@ public:
         }
         else
         {
-            throw std::runtime_error("Error: No node with such a key was found\n");
+            return root->Data.second;
         }
     };
 

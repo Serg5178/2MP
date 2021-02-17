@@ -27,7 +27,8 @@ int main(){
     class map<int,std::string> map1 = map;
     map.clear();
     std::cout << map1.isEmpety() << " " << map.isEmpety()<< "\n";
+    std::cout << map1[14] << std::endl;
     map1.insert(14,"a11");
-    map1.print();
+    std::cout << map1[14] << std::endl;
     return 0; 
 }
